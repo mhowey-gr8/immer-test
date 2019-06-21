@@ -1,8 +1,8 @@
-import React, { useRef } from "react";
+import React, { useReducer, useRef } from "react";
 import "./App.css";
 // import produce from "immer";
 import ImmerTest from "./components/ImmerTest";
-import { useImmerReducer } from "use-immer";
+import { useImmer, useImmerReducer } from "use-immer";
 
 function App() {
   const inputEl = useRef(null);
@@ -15,6 +15,7 @@ function App() {
         draft.push(action.payload);
         return;
       case "clear":
+        // draft.length = 0;
         return initialState;
       default:
         throw new Error();

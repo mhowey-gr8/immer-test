@@ -1,32 +1,45 @@
-import React, { useRef } from "react";
+import React, { useReducer, useState, useRef } from "react";
 import "./App.css";
-// import produce from "immer";
+import produce from "immer";
 import ImmerTest from "./components/ImmerTest";
-import { useImmerReducer } from "use-immer";
+import { useImmer } from "use-immer";
 
 function App() {
   const inputEl = useRef(null);
-  const initialState = [];
-  const [state, dispatch] = useImmerReducer(reducer, initialState);
 
-  function reducer(draft, action) {
-    switch (action.type) {
-      case "add":
-        draft.push(action.payload);
-        return;
-      case "clear":
-        return initialState;
-      default:
-        throw new Error();
+  const [todos, updateTodos] = useImmer([
+    {
+      text: "learn immer",
+      done: false
+    },
+    {
+      text: "simplify all code",
+      done: false
     }
+  ]);
+
+  function clearTodos() {
+    updateTodos(draft => {
+      draft.length = 0;
+    });
   }
+
+  function addTodo(obj) {
+    updateTodos(draft => {
+      draft.push(obj);
+    });
+  }
+
+  let nextTodos = produce(todos, draft => {
+    draft.push({ text: "Push onto draft..", done: false });
+  });
 
   return (
     <div className='App'>
       <header className='App-header'>
         <ImmerTest />
         <ul>
-          {state.map(todo => {
+          {todos.map(todo => {
             return <li>{todo.text}</li>;
           })}
         </ul>
@@ -39,10 +52,7 @@ function App() {
                 text: inputEl.current.value,
                 done: false
               };
-              dispatch({ type: "add", payload: todoobj });
-
-              inputEl.current.value = "";
-              inputEl.current.focus();
+              addTodo(todoobj);
             }}
           >
             Add Todo
@@ -50,8 +60,7 @@ function App() {
         </form>
         <button
           onClick={() => {
-            dispatch({ type: "clear" });
-            // clearTodos();
+            clearTodos();
           }}
         >
           Clear Todos

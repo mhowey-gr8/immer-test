@@ -1,21 +1,42 @@
-import React, { useRef } from "react";
+import React, { useReducer, useRef } from "react";
 import "./App.css";
 // import produce from "immer";
 import ImmerTest from "./components/ImmerTest";
-import { useImmerReducer } from "use-immer";
+import { useImmer, useImmerReducer } from "use-immer";
 
 function App() {
   const inputEl = useRef(null);
+  // const [state, updateState] = useImmer([
+  //   {
+  //     id: 1,
+  //     text: "learn immer",
+  //     done: false
+  //   },
+  //   {
+  //     id: 2,
+  //     text: "simplify all code",
+  //     done: false
+  //   },
+  //   {
+  //     id: 3,
+  //     text: "simplify all code",
+  //     done: false
+  //   },
+  //   {
+  //     id: 4,
+  //     text: "simplify all code",
+  //     done: false
+  //   }
+  // ]);
   const initialState = [];
   const [state, dispatch] = useImmerReducer(reducer, initialState);
 
   function reducer(draft, action) {
     switch (action.type) {
       case "add":
-        draft.push(action.payload);
-        return;
+        return draft.push(action.payload);
       case "clear":
-        return initialState;
+        return [];
       default:
         throw new Error();
     }
@@ -40,9 +61,8 @@ function App() {
                 done: false
               };
               dispatch({ type: "add", payload: todoobj });
-
+              //addTodo(todoobj);
               inputEl.current.value = "";
-              inputEl.current.focus();
             }}
           >
             Add Todo
